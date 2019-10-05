@@ -123,7 +123,6 @@ def main():
     # Declare Global Vars
 
     round = 0
-    key_can_be_pressed = True
 
     pygame.init()
     pygame.display.set_caption("Dice " + MY_VERSION)
