@@ -19,6 +19,7 @@ dice_length = 225
 # Use a dictionary to store the results
 result_p1 = {}
 result_p2 = {}
+result_overall = {}
 round = 0
 
 BLACK = (0, 0, 0)
@@ -77,8 +78,6 @@ def update_score(round, go, current_throw):
     else:
         d2 = {"Player 2 for round " + str(round): current_throw}
         result_p2.update(dict(d2))
-    #print(result_p1)
-    #print(result_p2)
 
 
 def draw_dice(surface, throw, go):
@@ -113,7 +112,7 @@ def draw_round_message(surface, font, round):
     pygame.display.flip()
 
 
-def draw_score(surface, font, current_throw, font2, go):
+def draw_score(surface, font, current_throw, font2, round):
     # Get historical scores
     offset_px = 5
     # Print the last 15 values from our p1 result dictionary
@@ -124,29 +123,39 @@ def draw_score(surface, font, current_throw, font2, go):
             offset_px += 15
 
     offset_px = 5
-    #print(go)
     if len(result_p2) > 0:
         for x in list(reversed(list(result_p2)))[0:15]:
             history = font2.render(format(result_p2[x]), True, BLUE)
             surface.blit(history, [start_x + offset_px, WindowHeight - offset ^ 2 * 2])
             offset_px += 15
+
     # Extract the last winner
     for x in list(reversed(list(result_p1)))[0:1]:
         p1_result = format(result_p1[x])
-        print(p1_result)
     for x in list(reversed(list(result_p2)))[0:1]:
         p2_result = format(result_p2[x])
-        print(p2_result)
+
+    # Calculate Winner Now
+    won = "D"
     if p1_result > p2_result:
-        text = font.render("P1", True, WHITE)
+        text = font.render("P1", True, GREEN)
+        won = "P1"
     if p1_result < p2_result:
-        text = font.render("P2", True, WHITE)
+        text = font.render("P2", True, BLUE)
+        won = "P2"
     if p1_result == p2_result:
         text = font.render("D", True, WHITE)
-    surface.blit(text, [start_x - offset, WindowHeight - offset * 2])
+        won = "D"
+    surface.blit(text, [offset / 64, WindowHeight - 80])
+
     # Update the screen
     pygame.display.flip()
 
+    # Record overall round results and return dict
+    d = {"round " + str(round): won}
+    result_overall.update(dict(d))
+
+    return (result_overall)
 
 def spin(surface, go):
     # Generate a spin effect
@@ -190,7 +199,9 @@ def main():
 
         # Draw Score
         if start and go == 2:
-            draw_score(dice_surface, font, current_throw, font2, go)
+            overall = draw_score(dice_surface, font, current_throw, font2, round)
+            # To do overall dict can be called by something in the UI to summarise the round results
+            print(overall)
 
         # Round start
 
