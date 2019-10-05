@@ -8,12 +8,17 @@ import random
 
 # Constants
 WindowWidth = 300
-WindowHeight = 300
+WindowHeight = 400
 scale = 90
+offset = 45
 start_x = WindowWidth / 2 - scale
-start_y = WindowHeight / 2 - scale
-dice_width = 200
-dice_length = 200
+start_y = WindowHeight / 2 - scale - offset
+dice_width = 225
+dice_length = 225
+# Use a dictionary to store the results
+result = {}
+player = 1
+round = 0
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -60,13 +65,27 @@ dice_faces = [ON, TW, TH, FO, FI, SI]
 
 def throw():
     # Generate a number 1 - 6
-    return random.randrange(1, 7)
+    dice_throw = random.randrange(1, 7)
+    return dice_throw
+
+
+def update_score(player, round, current_throw):
+    d = {"Player " + str(player) + " for round " + str(round): current_throw}
+    result.update(dict(d))  # update it
+    print (result)
 
 
 def draw_dice(surface, throw):
     # Wipe Screen
     dice_surface.fill(BLACK)
-    # Draw Dice
+    # Draw Dice Border
+    pygame.draw.line(surface, RED, (start_x - offset, start_y - offset), (start_x + dice_width, start_y - offset))
+    pygame.draw.line(surface, RED, (start_x - offset, start_y - offset), (start_x - offset, start_y + dice_length))
+    pygame.draw.line(surface, RED, (start_x + dice_width, start_y - offset),
+                     (start_x + dice_width, start_y + dice_length))
+    pygame.draw.line(surface, RED, (start_x - offset, start_y + dice_length),
+                     (start_x + dice_width, start_y + dice_length))
+    # Draw Dice Face Based on which 3x3 array has been selected
     for i in (range(3)):
         for j in (range(3)):
             # Nested loop is needed to iterate over the selected dice face array (3 x 3)
@@ -76,15 +95,26 @@ def draw_dice(surface, throw):
     pygame.display.flip()
 
 
+def draw_score(surface, font, current_throw):
+    text = font.render(str(current_throw), True, WHITE)
+    surface.blit(text, [start_x - offset, WindowHeight - offset * 2])
+    # Update the screen
+    pygame.display.flip()
+
+
 def spin(surface):
     # Generate a spin effect
-    for j in range(6):
-        draw_dice(surface, j)
+    for i in range(200):
+        for j in range(6):
+            draw_dice(surface, j)
 
 
 def main():
     loop = True
     # Declare Global Vars
+
+    round = 0
+    key_can_be_pressed = True
 
     pygame.init()
     pygame.display.set_caption("Dice " + MY_VERSION)
@@ -93,7 +123,7 @@ def main():
 
     # Initialise fonts we will use
     font = pygame.font.SysFont('Arial', 50, False, False)
-    font2 = pygame.font.SysFont('Arial', 25, False, False)
+    # font2 = pygame.font.SysFont('Arial', 25, False, False)
 
     current_throw = throw()
 
@@ -105,17 +135,29 @@ def main():
         # Draw Dice
         draw_dice(dice_surface, current_throw)
 
+        # Update Score
+        update_score(player, round, current_throw)
+
+        # Draw Score
+        draw_score(dice_surface, font, current_throw)
+
         # Handle quit
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    round += 1
+                    spin(dice_surface)
+                    current_throw = throw()
 
         # Input handling
-        keys = pygame.key.get_pressed()
-        for key in keys:
-            if keys[pygame.K_SPACE]:
-                spin(dice_surface)
-                current_throw = throw()
+        #keys = pygame.key.get_pressed()
+        #for key in keys:
+            #if keys[pygame.K_SPACE]:
+                #round += 1
+                #spin(dice_surface)
+                #current_throw = throw()
 
 
 # Call main
