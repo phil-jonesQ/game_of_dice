@@ -66,13 +66,13 @@ def throw():
 def draw_dice(surface, throw):
     # Wipe Screen
     dice_surface.fill(BLACK)
-    print ("Throw is " + str(throw))
+    #print ("Throw is " + str(throw))
     # Draw Dice
     for i in (range(3)):
         for j in (range(3)):
-            if dice_faces[throw - 1][i][j] == "X":
+            if dice_faces[throw - 1][j][i] == "X":
                 pygame.draw.circle(surface, RED, (int(start_x + scale * i), int(start_y + scale * j)), 30)
-                print(dice_faces[throw - 1][i][j])
+                #print(dice_faces[throw - 1][i][j])
     # Update the screen
     pygame.display.flip()
 
