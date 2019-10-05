@@ -72,7 +72,7 @@ def throw():
 def update_score(player, round, current_throw):
     d = {"Player " + str(player) + " for round " + str(round): current_throw}
     result.update(dict(d))  # update it
-    print (result)
+    #print (result)
 
 
 def draw_dice(surface, throw):
@@ -95,9 +95,17 @@ def draw_dice(surface, throw):
     pygame.display.flip()
 
 
-def draw_score(surface, font, current_throw):
+def draw_score(surface, font, current_throw, results):
     text = font.render(str(current_throw), True, WHITE)
     surface.blit(text, [start_x - offset, WindowHeight - offset * 2])
+    # Get historical scores
+    offset_px = 5
+    if len(result) > 1:
+        for r in results:
+            print(results[r])
+            history = font.render(str(results[r]), True, WHITE)
+            surface.blit(history, [start_x + offset_px, WindowHeight - offset * 2])
+            offset_px += 20
     # Update the screen
     pygame.display.flip()
 
@@ -139,7 +147,7 @@ def main():
         update_score(player, round, current_throw)
 
         # Draw Score
-        draw_score(dice_surface, font, current_throw)
+        draw_score(dice_surface, font, current_throw, result)
 
         # Handle quit
         for event in pygame.event.get():
@@ -150,14 +158,6 @@ def main():
                     round += 1
                     spin(dice_surface)
                     current_throw = throw()
-
-        # Input handling
-        #keys = pygame.key.get_pressed()
-        #for key in keys:
-            #if keys[pygame.K_SPACE]:
-                #round += 1
-                #spin(dice_surface)
-                #current_throw = throw()
 
 
 # Call main
