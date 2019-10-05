@@ -1,5 +1,6 @@
 """ Version 1.00 - Routine to display a Six Sided Dice
 The dice can be thrown and be used for simple games
+The current thrown value is shown in white, with the last 15 historical values displayed in Grey
 Phil Jones October 2019 - phil.jones.24.4@gmail.com
 """
 
@@ -29,7 +30,7 @@ LIGHT_GREEN = (101, 152, 101)
 GREY = (128, 128, 128)
 dice_surface = pygame.display.set_mode((WindowWidth, WindowHeight))
 clock = pygame.time.Clock()
-MY_VERSION = "1.00"
+MY_VERSION = "1.05"
 
 # Dice Faces
 # One
@@ -95,17 +96,17 @@ def draw_dice(surface, throw):
     pygame.display.flip()
 
 
-def draw_score(surface, font, current_throw, results):
+def draw_score(surface, font, current_throw, font2):
     text = font.render(str(current_throw), True, WHITE)
     surface.blit(text, [start_x - offset, WindowHeight - offset * 2])
     # Get historical scores
     offset_px = 5
+    # Print the last 10 values from our result dictionary
     if len(result) > 1:
-        for r in results:
-            print(results[r])
-            history = font.render(str(results[r]), True, WHITE)
+        for x in list(reversed(list(result)))[1:15]:
+            history = font2.render(format(result[x]), True, GREY)
             surface.blit(history, [start_x + offset_px, WindowHeight - offset * 2])
-            offset_px += 20
+            offset_px += 15
     # Update the screen
     pygame.display.flip()
 
@@ -131,14 +132,14 @@ def main():
 
     # Initialise fonts we will use
     font = pygame.font.SysFont('Arial', 50, False, False)
-    # font2 = pygame.font.SysFont('Arial', 25, False, False)
+    font2 = pygame.font.SysFont('Arial', 25, False, False)
 
     current_throw = throw()
 
     while loop:
 
         # Control FPS
-        clock.tick(10)
+        clock.tick(5)
 
         # Draw Dice
         draw_dice(dice_surface, current_throw)
@@ -147,7 +148,7 @@ def main():
         update_score(player, round, current_throw)
 
         # Draw Score
-        draw_score(dice_surface, font, current_throw, result)
+        draw_score(dice_surface, font, current_throw, font2)
 
         # Handle quit
         for event in pygame.event.get():
