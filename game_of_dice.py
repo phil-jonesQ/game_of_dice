@@ -141,7 +141,7 @@ def draw_score(surface, font, current_throw, font2, round):
     if len(result_p1) > 0:
         for x in list(reversed(list(result_p1)))[0:15]:
             # Draw dividing lines
-            pygame.draw.line(surface, GREY, (start_x + offset_px, WindowHeight - offset * 2),
+            pygame.draw.line(surface, GREY, (start_x + offset_px, WindowHeight - (offset * 2) - pad * 2),
                              (start_x + offset_px, WindowHeight - 5))
             history = font2.render(format(result_p1[x]), True, GREEN)
             surface.blit(history, [start_x + offset_px + pad, WindowHeight - offset * 1.5])
