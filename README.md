@@ -14,4 +14,4 @@ V1.07 Toned down colours
 
 # Screenshot
 
-![Alt text](/game_of_dice/blob/master/game_of_dice.PNG?raw=true "Screenshot of V1.07")
+![Alt text](/game_of_dice.PNG?raw=true "Screenshot of V1.07")
