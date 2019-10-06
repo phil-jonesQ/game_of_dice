@@ -114,6 +114,7 @@ def draw_round_message(surface, font, round):
 
 def draw_score(surface, font, current_throw, font2, round):
     # Get historical results
+    pad = 4
     offset_px = 0
     if len(result_overall) > 0:
         for x in list(reversed(list(result_overall)))[0:15]:
@@ -124,13 +125,13 @@ def draw_score(surface, font, current_throw, font2, round):
             win_indicator_blit_p1 = font2.render(win_indicator, True, GREEN)
             win_indicator_blit_p2 = font2.render(win_indicator, True, BLUE)
             if format(result_overall[x]) == "D":
-                surface.blit(draw_indicator_blit, [start_x + offset_px, WindowHeight - offset * 2])
+                surface.blit(draw_indicator_blit, [start_x + offset_px + pad, WindowHeight - offset * 2])
                 offset_px += 20
             if format(result_overall[x]) == "P1":
-                surface.blit(win_indicator_blit_p1, [start_x + offset_px, WindowHeight - offset * 1.8])
+                surface.blit(win_indicator_blit_p1, [start_x + offset_px + pad, WindowHeight - offset * 1.8])
                 offset_px += 20
             if format(result_overall[x]) == "P2":
-                surface.blit(win_indicator_blit_p2, [start_x + offset_px, WindowHeight - offset / 2.5])
+                surface.blit(win_indicator_blit_p2, [start_x + offset_px + pad, WindowHeight - offset / 2.5])
                 offset_px += 20
     # Get historical scores
     # Print the last 15 values from our p1 and p2 result dictionary
@@ -141,14 +142,14 @@ def draw_score(surface, font, current_throw, font2, round):
             pygame.draw.line(surface, GREY, (start_x + offset_px, WindowHeight - offset * 2),
                              (start_x + offset_px, WindowHeight - 5))
             history = font2.render(format(result_p1[x]), True, GREEN)
-            surface.blit(history, [start_x + offset_px, WindowHeight - offset * 1.5])
+            surface.blit(history, [start_x + offset_px + pad, WindowHeight - offset * 1.5])
             offset_px += 20
 
     offset_px = 0
     if len(result_p2) > 0:
         for x in list(reversed(list(result_p2)))[0:15]:
             history = font2.render(format(result_p2[x]), True, BLUE)
-            surface.blit(history, [start_x + offset_px, WindowHeight - offset ^ 2 * 2])
+            surface.blit(history, [start_x + offset_px + pad, WindowHeight - offset ^ 2 * 2])
             offset_px += 20
 
     # Extract the last winner
@@ -157,18 +158,25 @@ def draw_score(surface, font, current_throw, font2, round):
     for x in list(reversed(list(result_p2)))[0:1]:
         p2_result = format(result_p2[x])
 
+    # Display the round number
+    round_blit = font2.render("R: " + str(round),True, RED)
     # Calculate Winner Now
     won = "D"
     if p1_result > p2_result:
         text = font.render("P1", True, GREEN)
+        text2 = font2.render("WON",True, GREEN)
+        surface.blit(text2, [offset / 64, WindowHeight - 30])
         won = "P1"
     if p1_result < p2_result:
         text = font.render("P2", True, BLUE)
+        text2 = font2.render("WON", True, BLUE)
+        surface.blit(text2, [offset / 64, WindowHeight - 30])
         won = "P2"
     if p1_result == p2_result:
         text = font.render("D", True, WHITE)
         won = "D"
     surface.blit(text, [offset / 64, WindowHeight - 80])
+    surface.blit(round_blit, [offset / 32, WindowHeight - 100])
 
     # Update the screen
     pygame.display.flip()
@@ -223,7 +231,7 @@ def main():
         if start and go == 2:
             overall = draw_score(dice_surface, font, current_throw, font2, round)
             # To do overall dict can be called by something in the UI to summarise the round results
-            print(overall)
+            #print(overall)
 
         # Round start
 
