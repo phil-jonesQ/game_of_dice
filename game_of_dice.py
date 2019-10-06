@@ -1,7 +1,9 @@
-""" Version 1.00 - Routine to display a Six Sided Dice
+""" Version 1.07 - Routine to display a Six Sided Dice
 The dice can be thrown and be used for simple games
 The current thrown value is shown in white, with the last 15 historical values displayed in Grey
 Phil Jones October 2019 - phil.jones.24.4@gmail.com
+V1.06 Added historic scores and results to UI
+V1.07 Toned down colours
 """
 
 import pygame
@@ -22,16 +24,16 @@ result_p2 = {}
 result_overall = {}
 round = 0
 
-BLACK = (0, 0, 0)
+BLACK = (10, 10, 10)
 WHITE = (255, 255, 255)
-BLUE = (0, 0, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
+BLUE = (22, 55, 200)
+RED = (200, 55, 10)
+GREEN = (0, 200, 0)
 LIGHT_GREEN = (101, 152, 101)
 GREY = (128, 128, 128)
 dice_surface = pygame.display.set_mode((WindowWidth, WindowHeight))
 clock = pygame.time.Clock()
-MY_VERSION = "1.05"
+MY_VERSION = "1.07"
 
 # Dice Faces
 # One
@@ -99,7 +101,7 @@ def draw_dice(surface, throw, go):
         for j in (range(3)):
             # Nested loop is needed to iterate over the selected dice face array (3 x 3)
             if dice_faces[throw - 1][j][i] == "X":
-                pygame.draw.circle(surface, my_colour, (int(start_x + scale * i), int(start_y + scale * j)), int(scale / 3))
+                pygame.draw.circle(surface, WHITE, (int(start_x + scale * i), int(start_y + scale * j)), int(scale / 3))
     # Update the screen
     pygame.display.flip()
 
@@ -107,8 +109,8 @@ def draw_dice(surface, throw, go):
 def draw_round_message(surface, font, round):
     # Wipe Screen
     dice_surface.fill(BLACK)
-    text = font.render("SPACE TO THROW... ", True, RED)
-    surface.blit(text, [offset, WindowHeight / 2 - offset])
+    text = font.render("SPACE TO START.....", True, RED)
+    surface.blit(text, [offset / 2, WindowHeight / 2 - offset])
     pygame.display.flip()
 
 
@@ -125,13 +127,13 @@ def draw_score(surface, font, current_throw, font2, round):
             win_indicator_blit_p1 = font2.render(win_indicator, True, GREEN)
             win_indicator_blit_p2 = font2.render(win_indicator, True, BLUE)
             if format(result_overall[x]) == "D":
-                surface.blit(draw_indicator_blit, [start_x + offset_px + pad, WindowHeight - offset * 2])
+                surface.blit(draw_indicator_blit, [start_x + offset_px + pad -2, WindowHeight - offset * 2])
                 offset_px += 20
             if format(result_overall[x]) == "P1":
-                surface.blit(win_indicator_blit_p1, [start_x + offset_px + pad, WindowHeight - offset * 1.8])
+                surface.blit(win_indicator_blit_p1, [start_x + offset_px + pad +2, WindowHeight - offset * 1.8])
                 offset_px += 20
             if format(result_overall[x]) == "P2":
-                surface.blit(win_indicator_blit_p2, [start_x + offset_px + pad, WindowHeight - offset / 2.5])
+                surface.blit(win_indicator_blit_p2, [start_x + offset_px + pad +2, WindowHeight - offset / 2.5])
                 offset_px += 20
     # Get historical scores
     # Print the last 15 values from our p1 and p2 result dictionary
@@ -158,8 +160,7 @@ def draw_score(surface, font, current_throw, font2, round):
     for x in list(reversed(list(result_p2)))[0:1]:
         p2_result = format(result_p2[x])
 
-    # Display the round number
-    round_blit = font2.render("R: " + str(round),True, RED)
+
     # Calculate Winner Now
     won = "D"
     if p1_result > p2_result:
@@ -176,7 +177,10 @@ def draw_score(surface, font, current_throw, font2, round):
         text = font.render("D", True, WHITE)
         won = "D"
     surface.blit(text, [offset / 64, WindowHeight - 80])
-    surface.blit(round_blit, [offset / 32, WindowHeight - 100])
+
+    # Display the round number
+    round_blit = font2.render("R: " + str(round), True, RED)
+    surface.blit(round_blit, [offset / 16, WindowHeight - 100])
 
     # Update the screen
     pygame.display.flip()
