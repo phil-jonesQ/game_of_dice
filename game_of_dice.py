@@ -120,20 +120,19 @@ def draw_score(surface, font, current_throw, font2, round):
     offset_px = 0
     if len(result_overall) > 0:
         for x in list(reversed(list(result_overall)))[0:15]:
-            #history = font2.render(format(result_overall[x]), True, RED)
             win_indicator = "*"
-            draw_indicator = "D"
+            draw_indicator = "-"
             draw_indicator_blit = font2.render(draw_indicator, True, GREY)
             win_indicator_blit_p1 = font2.render(win_indicator, True, GREEN)
             win_indicator_blit_p2 = font2.render(win_indicator, True, BLUE)
             if format(result_overall[x]) == "D":
-                surface.blit(draw_indicator_blit, [start_x + offset_px + pad -2, WindowHeight - offset * 2])
+                surface.blit(draw_indicator_blit, [start_x + offset_px + pad + 2, WindowHeight - offset * 2])
                 offset_px += 20
             if format(result_overall[x]) == "P1":
-                surface.blit(win_indicator_blit_p1, [start_x + offset_px + pad +2, WindowHeight - offset * 1.8])
+                surface.blit(win_indicator_blit_p1, [start_x + offset_px + pad + 2, WindowHeight - offset * 1.8])
                 offset_px += 20
             if format(result_overall[x]) == "P2":
-                surface.blit(win_indicator_blit_p2, [start_x + offset_px + pad +2, WindowHeight - offset / 2.5])
+                surface.blit(win_indicator_blit_p2, [start_x + offset_px + pad + 2, WindowHeight - offset * 1.8])
                 offset_px += 20
     # Get historical scores
     # Print the last 15 values from our p1 and p2 result dictionary
